@@ -4,40 +4,44 @@ const router = Router();
 
 /**
  * GET /api/flights/search
- * Mock flight search
+ * Query params:
+ *  - origin
+ *  - destination
+ *  - date (ISO string)
+ *  - passengers
  */
-router.get("/search", (req, res) => {
-  const { origin, destination } = req.query;
+router.get("/search", async (req, res) => {
+  const { origin, destination, date, passengers } = req.query;
 
   if (!origin || !destination) {
-    return res.status(400).json({ message: "Missing origin or destination" });
+    return res.status(400).json({
+      message: "origin and destination are required",
+    });
   }
 
-  return res.json({
-    flights: [
-      {
-        id: 1,
-        origin,
-        destination,
-        airline: "IndiGo",
-        price: 5200,
-      },
-      {
-        id: 2,
-        origin,
-        destination,
-        airline: "Air India",
-        price: 6100,
-      },
-      {
-        id: 3,
-        origin,
-        destination,
-        airline: "Vistara",
-        price: 6900,
-      },
-    ],
-  });
+  // Normalize inputs
+  const from = String(origin).toUpperCase();
+  const to = String(destination).toUpperCase();
+  const pax = passengers ? Number(passengers) : 1;
+
+  // (Mock logic for now – real APIs later)
+  const baseFlights = [
+    { airline: "IndiGo", price: 5200 },
+    { airline: "Air India", price: 6100 },
+    { airline: "Vistara", price: 6900 },
+  ];
+
+  // Simple pricing logic
+  const flights = baseFlights.map((f, index) => ({
+    id: index + 1,
+    origin: from,
+    destination: to,
+    airline: f.airline,
+    price: f.price * pax,
+    date: date || new Date().toISOString(),
+  }));
+
+  return res.json({ flights });
 });
 
 export default router;
