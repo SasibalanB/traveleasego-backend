@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth";
 import flightRoutes from "./routes/flights";
+import bookingsRoutes from "./routes/bookings"; 
 
 
 
@@ -19,6 +20,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/flights", flightRoutes);
+app.use("/api/bookings", bookingsRoutes);
 
 const PORT = process.env.PORT || 3000;
 
