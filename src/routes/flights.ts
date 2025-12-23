@@ -4,14 +4,16 @@ const router = Router();
 
 /**
  * GET /api/flights/search
- * Query params:
- *  - origin
- *  - destination
- *  - date (ISO string)
- *  - passengers
  */
-router.get("/search", async (req, res) => {
-  const { origin, destination, date, passengers } = req.query;
+router.get("/search", (req, res) => {
+  const {
+    origin,
+    destination,
+    date,
+    passengers,
+    maxPrice,
+    stops,
+  } = req.query;
 
   if (!origin || !destination) {
     return res.status(400).json({
@@ -19,29 +21,37 @@ router.get("/search", async (req, res) => {
     });
   }
 
-  // Normalize inputs
   const from = String(origin).toUpperCase();
   const to = String(destination).toUpperCase();
   const pax = passengers ? Number(passengers) : 1;
 
-  // (Mock logic for now – real APIs later)
   const baseFlights = [
-    { airline: "IndiGo", price: 5200 },
-    { airline: "Air India", price: 6100 },
-    { airline: "Vistara", price: 6900 },
+    { id: 1, airline: "IndiGo", price: 5200, stops: "Non-stop" },
+    { id: 2, airline: "Air India", price: 6100, stops: "1 Stop" },
+    { id: 3, airline: "Vistara", price: 6900, stops: "Non-stop" },
   ];
-
-  // Simple pricing logic
-  const flights = baseFlights.map((f, index) => ({
-    id: index + 1,
+	
+  let flights = baseFlights.map((f) => ({
+    id: f.id,
     origin: from,
     destination: to,
     airline: f.airline,
+    stops: f.stops,
     price: f.price * pax,
     date: date || new Date().toISOString(),
   }));
 
-  return res.json({ flights });
+  if (stops) {
+    flights = flights.filter((f) => f.stops === stops);
+  }
+
+  if (maxPrice) {
+    flights = flights.filter(
+      (f) => f.price <= Number(maxPrice)
+    );
+  }
+
+  res.json({ flights });
 });
 
 export default router;
