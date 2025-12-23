@@ -1,4 +1,34 @@
 import { Router } from "express";
+router.get("/", (req, res) => {
+  const flights = [
+    {
+      id: 1,
+      origin: "DEL",
+      destination: "BOM",
+      airline: "IndiGo",
+      stops: "Non-stop",
+      price: 5200,
+    },
+    {
+      id: 2,
+      origin: "DEL",
+      destination: "BOM",
+      airline: "Air India",
+      stops: "1 Stop",
+      price: 6100,
+    },
+    {
+      id: 3,
+      origin: "DEL",
+      destination: "BOM",
+      airline: "Vistara",
+      stops: "Non-stop",
+      price: 6900,
+    },
+  ];
+
+  res.json(flights);
+});
 
 const router = Router();
 
