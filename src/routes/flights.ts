@@ -1,4 +1,11 @@
-import { Router } from "express";
+oimport { Router } from "express";
+
+const router = Router();
+
+/**
+ * GET /api/flights
+ * Default flights (used by UI initial load)
+ */
 router.get("/", (req, res) => {
   const flights = [
     {
@@ -30,20 +37,11 @@ router.get("/", (req, res) => {
   res.json(flights);
 });
 
-const router = Router();
-
 /**
  * GET /api/flights/search
  */
 router.get("/search", (req, res) => {
-  const {
-    origin,
-    destination,
-    date,
-    passengers,
-    maxPrice,
-    stops,
-  } = req.query;
+  const { origin, destination, date, passengers, maxPrice, stops } = req.query;
 
   if (!origin || !destination) {
     return res.status(400).json({
@@ -60,7 +58,7 @@ router.get("/search", (req, res) => {
     { id: 2, airline: "Air India", price: 6100, stops: "1 Stop" },
     { id: 3, airline: "Vistara", price: 6900, stops: "Non-stop" },
   ];
-	
+
   let flights = baseFlights.map((f) => ({
     id: f.id,
     origin: from,
@@ -76,9 +74,7 @@ router.get("/search", (req, res) => {
   }
 
   if (maxPrice) {
-    flights = flights.filter(
-      (f) => f.price <= Number(maxPrice)
-    );
+    flights = flights.filter((f) => f.price <= Number(maxPrice));
   }
 
   res.json({ flights });
